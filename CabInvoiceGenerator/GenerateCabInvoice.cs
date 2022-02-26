@@ -18,11 +18,19 @@ namespace CabInvoiceGenerator
         //Declaring Parameterized constructor(UC1)
         public GenerateCabInvoice(RideType type)
         {
+            //Initializing the normal ride fare(UC1)
             if (type.Equals(RideType.NORMAL))
             {
                 COST_PER_KM = 10;
                 MINIMUM_FARE = 5;
                 COST_PER_MINUTE = 1;
+            }
+            //Initializing the premium ride fare(UC4)
+            if (type.Equals(RideType.PREMIUM))
+            {
+                COST_PER_KM = 15;
+                MINIMUM_FARE = 20;
+                COST_PER_MINUTE = 2;
             }
         }
         //Method to calculate single ride fare(UC1)
@@ -58,3 +66,4 @@ namespace CabInvoiceGenerator
         }
     }
 }
+
