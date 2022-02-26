@@ -1,6 +1,7 @@
 ﻿using CabInvoiceGenerator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 
 namespace CabInvoiceGeneratorTestProject
 {
@@ -35,10 +36,10 @@ namespace CabInvoiceGeneratorTestProject
         [TestCategory("Custom Exception")]
         public void GivenTimeAndDistanceReturnCustomException()
         {
-            var invalidTimeException = Assert.ThrowsException<CanInvoiceGenertorException>(() => generateNormalFare.CalculateFare(-6, 10));
-            Assert.AreEqual(CanInvoiceGenertorException.ExceptionType.INVALID_TIME, invalidTimeException.exceptionType);
-            var invalidDistanceException = Assert.ThrowsException<CanInvoiceGenertorException>(() => generateNormalFare.CalculateFare(5, -5));
-            Assert.AreEqual(CanInvoiceGenertorException.ExceptionType.INVALID_DISTANCE, invalidDistanceException.exceptionType);
+            var invalidTimeException = Assert.ThrowsException<CabInvoiceGenertorException>(() => generateNormalFare.CalculateFare(-6, 10));
+            Assert.AreEqual(CabInvoiceGenertorException.ExceptionType.INVALID_TIME, invalidTimeException.exceptionType);
+            var invalidDistanceException = Assert.ThrowsException<CabInvoiceGenertorException>(() => generateNormalFare.CalculateFare(5, -5));
+            Assert.AreEqual(CabInvoiceGenertorException.ExceptionType.INVALID_DISTANCE, invalidDistanceException.exceptionType);
         }
         //Refactor The Test for returning invoice summary when given multiple rides(UC2-TC2.1 & UC3-3.1) 
         [TestMethod]
@@ -59,8 +60,31 @@ namespace CabInvoiceGeneratorTestProject
         public void GivenNoRidesReturnCustomException()
         {
             Ride[] cabRides = { };
-            var nullRidesException = Assert.ThrowsException<CanInvoiceGenertorException>(() => generateNormalFare.CalculateFare(cabRides));
-            Assert.AreEqual(CanInvoiceGenertorException.ExceptionType.NULL_RIDES, nullRidesException.exceptionType);
+            var nullRidesException = Assert.ThrowsException<CabInvoiceGenertorException>(() => generateNormalFare.CalculateFare(cabRides));
+            Assert.AreEqual(CabInvoiceGenertorException.ExceptionType.NULL_RIDES, nullRidesException.exceptionType);
+        }
+        //Test for returning invoice service when queried by UserId(UC5-TC-5.1)
+        [TestMethod]
+        [TestCategory("Invoice Summary Queried By UserId")]
+        [DataRow(1, 2, 60, 5, 2.0, 1, 1.0)]
+        [DataRow(2, 2, 136, 7, 5.0, 1, 3.0)]
+        [DataRow(3, 2, 191, 8, 4.0, 5, 7.0)]
+        public void GivenUserIdReturnInvoiceService(int userId, int cabsRideCount, double totalFare, int time, double distance, int timeTwo, double distaceTwo)
+        {
+            //Created object for ride repository
+            RideRepository rideRepository = new RideRepository();
+            //Adding values for different user id
+            Ride[] userOne = { new Ride(time, distance), new Ride(timeTwo, distaceTwo) };
+            rideRepository.AddUserRidesToRepository(userId, userOne, RideType.PREMIUM);
+            //Creating list of userRide for expected value
+            List<Ride> list = new List<Ride>();
+            list.AddRange(userOne);
+            InvoiceSummary userInvoice = new InvoiceSummary(cabsRideCount, totalFare);
+
+            //Using Assert to compare actual and expected value 
+            UserCabInvoiceService expectedUserCabInvoice = new UserCabInvoiceService(list, userInvoice);
+            UserCabInvoiceService actualUserCabInvoice = rideRepository.ReturnInvoicefromRideRepository(userId);
+            Assert.AreEqual(actualUserCabInvoice, expectedUserCabInvoice);
         }
     }
 }

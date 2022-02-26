@@ -40,15 +40,15 @@ namespace CabInvoiceGenerator
             try
             {
                 if (time <= 0)
-                    throw new CanInvoiceGenertorException(CanInvoiceGenertorException.ExceptionType.INVALID_TIME, "Time Is Invalid");
+                    throw new CabInvoiceGenertorException(CabInvoiceGenertorException.ExceptionType.INVALID_TIME, "Time Is Invalid");
                 if (distance <= 0)
-                    throw new CanInvoiceGenertorException(CanInvoiceGenertorException.ExceptionType.INVALID_DISTANCE, "Distance Is Invalid");
+                    throw new CabInvoiceGenertorException(CabInvoiceGenertorException.ExceptionType.INVALID_DISTANCE, "Distance Is Invalid");
                 //Calculating total fare for single ride
                 totalFare = (distance * COST_PER_KM) + (time * COST_PER_MINUTE);
                 //Comparing minimum fare and calculated fare to return the maximum fare
                 return Math.Max(totalFare, MINIMUM_FARE);
             }
-            catch (CanInvoiceGenertorException ex)
+            catch (CabInvoiceGenertorException ex)
             {
                 throw ex;
             }
@@ -58,7 +58,7 @@ namespace CabInvoiceGenerator
         {
             double totalFare = 0;
             if (rides.Length == 0)
-                throw new CanInvoiceGenertorException(CanInvoiceGenertorException.ExceptionType.NULL_RIDES, "No Rides Found");
+                throw new CabInvoiceGenertorException(CabInvoiceGenertorException.ExceptionType.NULL_RIDES, "No Rides Found");
             foreach (var ride in rides)
                 totalFare += CalculateFare(ride.time, ride.distance);
             double resFare = Math.Max(totalFare, MINIMUM_FARE);
