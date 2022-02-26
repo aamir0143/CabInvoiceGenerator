@@ -45,5 +45,16 @@ namespace CabInvoiceGenerator
                 throw ex;
             }
         }
+        //Method to calculate fare for multiple(UC2)
+        public double CalculateFare(Ride[] rides)
+        {
+            double totalFare = 0;
+            if (rides.Length == 0)
+                throw new CanInvoiceGenertorException(CanInvoiceGenertorException.ExceptionType.NULL_RIDES, "No Rides Found");
+            foreach (var ride in rides)
+                totalFare += CalculateFare(ride.time, ride.distance);
+            double resFare = Math.Max(totalFare, MINIMUM_FARE);
+            return resFare;
+        }
     }
 }

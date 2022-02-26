@@ -17,7 +17,7 @@ namespace CabInvoiceGenerator
         //Enum for holding group of constants
         public enum ExceptionType
         {
-            INVALID_TIME, INVALID_DISTANCE
+            INVALID_TIME, INVALID_DISTANCE, NULL_RIDES
         }
         //Parametrized constructor for custom exception using lambda function
         public CanInvoiceGenertorException(ExceptionType exceptionType, string message) : base(message) => this.exceptionType = exceptionType;
