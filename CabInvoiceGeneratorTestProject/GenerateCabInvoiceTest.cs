@@ -37,18 +37,18 @@ namespace CabInvoiceGeneratorTestProject
             var invalidDistanceException = Assert.ThrowsException<CanInvoiceGenertorException>(() => generateNormalFare.CalculateFare(5, -5));
             Assert.AreEqual(CanInvoiceGenertorException.ExceptionType.INVALID_DISTANCE, invalidDistanceException.exceptionType);
         }
-        //Test for returning aggregate fare when given multiple rides(UC2-TC2.1) 
+        //Refactor The Test for returning invoice summary when given multiple rides(UC2-TC2.1 & UC3-3.1) 
         [TestMethod]
-        [TestCategory("Calculate Aggregate Fare")]
+        [TestCategory("Aggregate Fare And Invoice Summary")]
         public void GivenMulRidesShouldReturnAggregateFare()
         {
             //Arrange
-            double actual, expected = 248;
             Ride[] cabRides = { new Ride(5, 10.6), new Ride(6, 10.6), new Ride(5, 2.0) };
+            InvoiceSummary expected = new InvoiceSummary(cabRides.Length, 248);
             //Act
-            actual = generateNormalFare.CalculateFare(cabRides);
+            var actual = generateNormalFare.CalculateFare(cabRides);
             //Assert
-            Assert.AreEqual(actual, expected);
+            expected.Equals(actual);
         }
         //Test for returning null rides exception when given no rides(UC2-TC2.2) 
         [TestMethod]
